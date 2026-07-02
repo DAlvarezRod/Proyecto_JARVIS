@@ -125,3 +125,5 @@ secrets/
 
 start_jarvis.bat
 start_jarvis.ps1
+
+start_frontend.bat
