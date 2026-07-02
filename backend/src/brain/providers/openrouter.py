@@ -1,9 +1,8 @@
-"""OpenRouter provider — connects JARVIS to real LLM models."""
+"""OpenRouter provider — connects Illo to real LLM models."""
 
 from __future__ import annotations
 
 import json
-import os
 import urllib.request
 import urllib.error
 from typing import Any, Dict, List, Optional
@@ -19,7 +18,7 @@ class OpenRouterProvider(BrainProvider):
     def __init__(
         self,
         api_key: str,
-        model: str = "anthropic/claude-sonnet-4-20250514",
+        model: str = "nvidia/nemotron-3-ultra-550b-a55b:free",
         system_prompt: Optional[str] = None,
         max_tokens: int = 1024,
     ):
@@ -27,18 +26,24 @@ class OpenRouterProvider(BrainProvider):
         self.model = model
         self.max_tokens = max_tokens
         self.system_prompt = system_prompt or (
-            "You are JARVIS, an advanced AI assistant inspired by Iron Man's JARVIS. "
+            "You are Illo, an advanced AI assistant. "
             "You are helpful, precise, and speak with a professional but friendly tone. "
             "You can assist with smart home control, general questions, calculations, "
             "weather, news, and more. Keep responses concise and useful. "
-            "If the user speaks Spanish, respond in Spanish."
+            "If the user speaks Spanish, respond in Spanish. "
+            "Your creator is David Alvarez."
         )
+        self.conversation_history: List[Dict[str, str]] = []
 
     async def think(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
+        self.conversation_history.append({"role": "user", "content": prompt})
+
+        if len(self.conversation_history) > 20:
+            self.conversation_history = self.conversation_history[-20:]
+
         messages: List[Dict[str, str]] = [
             {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": prompt},
-        ]
+        ] + self.conversation_history
 
         payload = json.dumps({
             "model": self.model,
@@ -53,7 +58,7 @@ class OpenRouterProvider(BrainProvider):
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.api_key}",
                 "HTTP-Referer": "https://github.com/DAlvarezRod/Proyecto_JARVIS",
-                "X-Title": "JARVIS AI Assistant",
+                "X-Title": "Illo AI Assistant",
             },
             method="POST",
         )
@@ -61,7 +66,9 @@ class OpenRouterProvider(BrainProvider):
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                return data["choices"][0]["message"]["content"]
+                reply = data["choices"][0]["message"]["content"]
+                self.conversation_history.append({"role": "assistant", "content": reply})
+                return reply
         except urllib.error.HTTPError as e:
             body = e.read().decode("utf-8", errors="replace")
             return f"[OpenRouter error {e.code}]: {body[:200]}"

@@ -2,10 +2,10 @@
 # Phase 1: Core Configuration
 
 jarvis:
-  name: "JARVIS"
+  name: "Illo"
   version: "1.0.0"
-  description: "Iron Man's AI Assistant"
-  wake_word: "jarvis"
+  description: "Illo Juan AI Assistant"
+  wake_word: "illo"
 
   # Voice Configuration
   voice:
@@ -16,7 +16,7 @@ jarvis:
     wake_detection:
       enabled: true
       wake_words:
-        - jarvis
+        - illo
       listen_timeout: 4
       phrase_time_limit: 6
       poll_delay: 0.2

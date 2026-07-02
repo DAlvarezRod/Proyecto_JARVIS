@@ -77,7 +77,9 @@ def create_app(
         text = str(payload.get("message", "")).strip()
         if not text:
             return jsonify({"error": "message is required"}), 400
-        response = asyncio.run(jarvis.process_user_input(text))
+        response = asyncio.run(jarvis.process_text(text))
+        jarvis.core.add_to_history("user", text)
+        jarvis.core.add_to_history("assistant", response)
         result = {
             "message": text,
             "response": response,
@@ -225,7 +227,9 @@ def create_app(
         if not text:
             emit("chat:error", {"error": "message is required"})
             return
-        response = asyncio.run(jarvis.process_user_input(text))
+        response = asyncio.run(jarvis.process_text(text))
+        jarvis.core.add_to_history("user", text)
+        jarvis.core.add_to_history("assistant", response)
         result = {
             "message": text,
             "response": response,
