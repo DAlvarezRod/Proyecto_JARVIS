@@ -1,0 +1,126 @@
+# JARVIS Configuration File
+# Phase 1: Core Configuration
+
+jarvis:
+  name: "JARVIS"
+  version: "1.0.0"
+  description: "Iron Man's AI Assistant"
+  wake_word: "jarvis"
+  
+  # Voice Configuration
+  voice:
+    engine: pyttsx3  # Options: pyttsx3, gtts
+    rate: 150  # Words per minute (70-300)
+    volume: 0.8  # 0.0-1.0
+    language: en  # Language code
+    wake_detection:
+      enabled: true
+      wake_words:
+        - jarvis
+      listen_timeout: 4
+      phrase_time_limit: 6
+      poll_delay: 0.2
+    
+  # NLU Configuration
+  nlu:
+    confidence_threshold: 0.7  # Minimum confidence to execute skill
+    max_context_history: 10  # Number of previous messages to remember
+    
+  # API Configuration
+  api:
+    timeout: 5  # Seconds to wait for API responses
+    max_retries: 3
+    retry_delay: 1  # Seconds between retries
+    
+  # Storage Configuration
+  storage:
+    conversation_db: "data/conversations.db"
+    device_state_file: "data/devices.json"
+    automation_rules_file: "data/automations.json"
+    custom_skills_dir: "../custom_skills"
+    preferences_file: "data/preferences.json"
+
+  # Automation Configuration
+  automation:
+    background_enabled: true
+    poll_interval: 1.0
+  brain:
+    default_provider: legacy_core
+    routing:
+      default: legacy_core
+      reasoning: legacy_core
+      coding: legacy_core
+  security:
+    require_explicit_approval: true
+    approval_prefix: "approve:"
+    audit_log_file: "logs/audit.log"
+  orchestrator:
+    enabled: true
+    safety:
+      require_explicit_approval: true
+      disclose_limitations: true
+      privileged_keywords:
+        - reset password
+        - delete account
+        - close account
+        - transfer funds
+        - purchase
+        - pair device
+        - firmware update
+        - factory reset
+        - send text
+        - send message
+        - call
+        - dial
+        - unlock phone
+
+# Logging Configuration
+logging:
+  level: DEBUG  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/jarvis.log"
+  max_size_mb: 10  # Rotate log when it reaches this size
+  backup_count: 5  # Keep this many backup logs
+
+# Skills Configuration (Phase 6)
+skills:
+  enabled:
+    - greeting
+    - time
+    - smart_home
+    - calculator
+    - weather
+    - news
+    - orchestrator
+  
+  # Individual skill configs
+  greeting:
+    enabled: true
+  
+  time:
+    enabled: true
+    timezone: America/Bogota
+    
+  smart_home:
+    enabled: true
+    auto_save_state: true
+
+  calculator:
+    enabled: true
+
+  weather:
+    enabled: true
+    default_location: bogota
+
+  news:
+    enabled: true
+    source: hacker_news
+
+  orchestrator:
+    enabled: true
+
+# Development Settings
+development:
+  debug: true
+  reload_on_change: true
+  mock_api_responses: false

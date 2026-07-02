@@ -1,0 +1,29 @@
+# Phase 1: Core Dependencies
+PyYAML
+python-dotenv
+
+# Phase 4: Speech Processing
+openai-whisper
+SpeechRecognition
+pyttsx3
+gTTS
+PyAudio
+
+# Phase 3: NLP
+spacy
+nltk
+
+# Phase 5: Web Framework & WebSockets
+Flask
+Flask-SocketIO
+Flask-CORS
+python-socketio
+aiohttp
+
+# Phase 6: API Integration & Async
+requests
+aiofiles
+
+# General
+numpy
+tzdata

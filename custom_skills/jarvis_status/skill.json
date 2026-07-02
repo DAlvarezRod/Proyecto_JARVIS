@@ -1,0 +1,8 @@
+{
+  "name": "custom_status",
+  "description": "Example custom skill loaded from a local manifest",
+  "enabled": true,
+  "keywords": ["custom status", "plugin status"],
+  "examples": ["custom status", "plugin status"],
+  "response": "Custom skill marketplace is online."
+}

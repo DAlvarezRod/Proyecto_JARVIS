@@ -1,0 +1,2 @@
+"""Configuration domain package."""
+

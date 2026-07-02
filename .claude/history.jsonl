@@ -1,0 +1,54 @@
+{"display":"ollama pull qwen2.5-coder::7b","pastedContents":{},"timestamp":1778678142204,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"/init","pastedContents":{},"timestamp":1778678158316,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"'","pastedContents":{},"timestamp":1778678176826,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"/color","pastedContents":{},"timestamp":1778678189235,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"@\"general-purpose (agent)\"","pastedContents":{},"timestamp":1778678201144,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"ollama pull qwen2.5-coder::7b","pastedContents":{},"timestamp":1778678219507,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"/exit","pastedContents":{},"timestamp":1778678338275,"project":"C:\\Users\\David\\.local\\bin","sessionId":"a6d1c7ff-96ee-4277-bcff-70c17d8e1559"}
+{"display":"System Properties","pastedContents":{},"timestamp":1778678415971,"project":"C:\\Users\\David\\.local\\bin","sessionId":"566621bf-6ce2-4f00-aefb-aa0abcd75b27"}
+{"display":"/exit","pastedContents":{},"timestamp":1778678852004,"project":"C:\\Users\\David\\.local\\bin","sessionId":"566621bf-6ce2-4f00-aefb-aa0abcd75b27"}
+{"display":"/login","pastedContents":{},"timestamp":1778681000393,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"/init","pastedContents":{},"timestamp":1778681007492,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"export ANTHROPIC_BASE_URL=\"http://localhost:11434\"","pastedContents":{},"timestamp":1778681093721,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"export ANTHROPIC_AUTH_TOKEN=\"ollama\"","pastedContents":{},"timestamp":1778681162764,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"export ANTHROPIC_API_KEY=\"\"","pastedContents":{},"timestamp":1778681269192,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"OLLAMA_CONTEXT_LENGTH=64000 ollama serve","pastedContents":{},"timestamp":1778681347015,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"/exit","pastedContents":{},"timestamp":1778681397814,"project":"C:\\Users\\David","sessionId":"59bf37e2-6468-4f8e-bb2f-fb7c895b615e"}
+{"display":"/init","pastedContents":{},"timestamp":1778681422181,"project":"C:\\Users\\David\\.local\\bin","sessionId":"b6ea9176-3553-452d-825c-c7c64af0355c"}
+{"display":"how does <filepath> work?","pastedContents":{},"timestamp":1778681449949,"project":"C:\\Users\\David","sessionId":"d22ced77-4306-424c-8b1c-b370b6ab30e7"}
+{"display":"/exit","pastedContents":{},"timestamp":1778681473911,"project":"C:\\Users\\David","sessionId":"d22ced77-4306-424c-8b1c-b370b6ab30e7"}
+{"display":"how does <filepath> work?","pastedContents":{},"timestamp":1778681488029,"project":"C:\\Users\\David","sessionId":"750fed00-c4b4-46a0-8cb5-a9dccfce7751"}
+{"display":"/exit","pastedContents":{},"timestamp":1778681561569,"project":"C:\\Users\\David","sessionId":"750fed00-c4b4-46a0-8cb5-a9dccfce7751"}
+{"display":"/logout","pastedContents":{},"timestamp":1778681670825,"project":"C:\\Users\\David","sessionId":"f3ef86ee-0eca-45b7-b784-4f82ca28b70b"}
+{"display":"/init","pastedContents":{},"timestamp":1778681722383,"project":"C:\\Users\\David","sessionId":"de91ca18-51da-4650-b988-242daa4d3283"}
+{"display":"/memory","pastedContents":{},"timestamp":1778681887714,"project":"C:\\Users\\David","sessionId":"de91ca18-51da-4650-b988-242daa4d3283"}
+{"display":"Muestra el contenido de CLAUDE.md para revisar qué estándares has definido","pastedContents":{},"timestamp":1778681952270,"project":"C:\\Users\\David","sessionId":"de91ca18-51da-4650-b988-242daa4d3283"}
+{"display":"Actualiza CLAUDE.md para establecer que este es el proyecto Jarvis y que mi lenguaje preferido para herramientas MCP es Python","pastedContents":{},"timestamp":1778682126339,"project":"C:\\Users\\David","sessionId":"de91ca18-51da-4650-b988-242daa4d3283"}
+{"display":"exit","pastedContents":{},"timestamp":1778682319423,"project":"C:\\Users\\David","sessionId":"de91ca18-51da-4650-b988-242daa4d3283"}
+{"display":"/init","pastedContents":{},"timestamp":1778682370101,"project":"C:\\Proyectos\\Jarvis","sessionId":"5ad0b769-788a-4057-ab6a-9603d1e53e67"}
+{"display":"/login","pastedContents":{},"timestamp":1778682373135,"project":"C:\\Proyectos\\Jarvis","sessionId":"5ad0b769-788a-4057-ab6a-9603d1e53e67"}
+{"display":"exit","pastedContents":{},"timestamp":1778682382302,"project":"C:\\Proyectos\\Jarvis","sessionId":"5ad0b769-788a-4057-ab6a-9603d1e53e67"}
+{"display":"Configura un entorno de Python en este directorio e instala mcp[cli] y httpx. Luego, crea un archivo llamado server.py usando la librería FastMCP. Quiero que Jarvis tenga su primera herramienta: una función para consultar el estado del sistema (CPU y RAM) y otra para abrir aplicaciones de Windows por nombre.","pastedContents":{},"timestamp":1778682426011,"project":"C:\\Proyectos\\Jarvis","sessionId":"4f9a0076-399d-4ee1-a2c8-0e64095b28c7"}
+{"display":"Ejecuta python server.py","pastedContents":{},"timestamp":1778682887240,"project":"C:\\Proyectos\\Jarvis","sessionId":"4f9a0076-399d-4ee1-a2c8-0e64095b28c7"}
+{"display":"Usa la librería elevenlabs de Python para crear un script que convierta cualquier texto que yo escriba en la terminal en una respuesta de voz usando el modelo eleven_flash_v2_5 para que sea instantáneo.","pastedContents":{},"timestamp":1778682910182,"project":"C:\\Proyectos\\Jarvis","sessionId":"4f9a0076-399d-4ee1-a2c8-0e64095b28c7"}
+{"display":"exit","pastedContents":{},"timestamp":1778683425524,"project":"C:\\Proyectos\\Jarvis","sessionId":"4f9a0076-399d-4ee1-a2c8-0e64095b28c7"}
+{"display":"claude -c","pastedContents":{},"timestamp":1778683556891,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"claude -r","pastedContents":{},"timestamp":1778683642602,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"Configura un sistema de memoria persistente usando una base de datos vectorial local (como ChromaDB) para que puedas recordar mis preferencias entre sesiones","pastedContents":{},"timestamp":1778683718018,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"Vamos a integrar Home Assistant. Ayúdame a configurar el servidor ha-mcp y a crear una primera automatización que se active cuando yo diga 'Jarvis, ya estoy en casa","pastedContents":{},"timestamp":1778684059781,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"verifica el entorno actual","pastedContents":{},"timestamp":1778684227087,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"inicializa git","pastedContents":{},"timestamp":1778684284330,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"Configurar paso a paso el ha-mcp-server con tus credenciales y configuración","pastedContents":{},"timestamp":1778684319794,"project":"C:\\Proyectos\\Jarvis","sessionId":"0fb77502-b499-4fee-81bd-b951f05196bd"}
+{"display":"Tienes acceso a C:\\Proyectos\\Jarvis ?","pastedContents":{},"timestamp":1782746337996,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"Quiero que tengas acceso a esa carpeta o a otras que te pida","pastedContents":{},"timestamp":1782746464498,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"Quiero que leas este archivo: C:\\Users\\David\\Documents","pastedContents":{},"timestamp":1782747023130,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"Perfecto, vuelve a revisar en C:\\Windows\\System32","pastedContents":{},"timestamp":1782747206926,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"Perfecto, vuelve a revisar en C:\\Windows\\System32, el archivo se llama ARCHITECTURE.,d","pastedContents":{},"timestamp":1782747224608,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"Perfecto, vuelve a revisar en C:\\Windows\\System32, el archivo se llama ARCHITECTURE.md","pastedContents":{},"timestamp":1782747228811,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"Como hago para darte las herramientas para que puedas leer ese archivo?","pastedContents":{},"timestamp":1782747329866,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"/bye","pastedContents":{},"timestamp":1782747816242,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"/exit","pastedContents":{},"timestamp":1782747820042,"project":"C:\\Windows\\System32","sessionId":"3ac4dddd-02f9-4d49-977f-d130b036a3b8"}
+{"display":"list","pastedContents":{},"timestamp":1782747905823,"project":"C:\\Windows\\System32","sessionId":"c4188a14-931d-4aff-a4df-e0e35e524e01"}
+{"display":"/login","pastedContents":{},"timestamp":1782747917388,"project":"C:\\Windows\\System32","sessionId":"c4188a14-931d-4aff-a4df-e0e35e524e01"}
+{"display":"/exit","pastedContents":{},"timestamp":1782747938117,"project":"C:\\Windows\\System32","sessionId":"c4188a14-931d-4aff-a4df-e0e35e524e01"}
+{"display":"/exit","pastedContents":{},"timestamp":1782748148665,"project":"C:\\Windows\\System32","sessionId":"978a920d-480d-45f8-832a-a6027c188e14"}
