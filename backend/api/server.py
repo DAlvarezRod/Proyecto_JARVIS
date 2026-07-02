@@ -15,7 +15,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from core import initialize_jarvis
+from core impofrom src.app.runtime import initialize_runtimert initialize_jarvis
 from logger import get_logger
 from system_startup import StartupManager
 
@@ -31,7 +31,7 @@ def create_app(
     app.config["SECRET_KEY"] = "jarvis-dev"
     CORS(app, resources={r"/*": {"origins": "*"}})
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
-    jarvis = initialize_jarvis(config_path)
+    jarvis = initialize_runtime(config_path)
     startup_manager = startup_manager or StartupManager(backend_dir=BACKEND_DIR)
 
     def device_payload() -> list[Dict[str, Any]]:
