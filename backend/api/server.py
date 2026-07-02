@@ -15,7 +15,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from core impofrom src.app.runtime import initialize_runtimert initialize_jarvis
+from src.app.runtime import initialize_runtime
 from logger import get_logger
 from system_startup import StartupManager
 
