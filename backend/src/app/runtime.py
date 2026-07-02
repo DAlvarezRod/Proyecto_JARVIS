@@ -12,6 +12,8 @@ from src.brain.providers import LegacyCoreProvider
 from src.heartbeat import EventBus, HeartbeatScheduler
 from src.interfaces import InterfaceHub
 from src.security import AuditLogger, AuthorizationService
+from src.memory import MemoryPort
+from src.memory.sqlite_adapter import SqliteMemoryAdapter
 
 _runtime_instance: Optional["JarvisRuntime"] = None
 
@@ -47,6 +49,7 @@ class JarvisRuntime:
         self.interfaces = InterfaceHub()
         self.events = EventBus()
         self.heartbeat = HeartbeatScheduler(self.events)
+        self.memory_port: MemoryPort = SqliteMemoryAdapter(self.core.memory)
 
     # --- Delegated API (server.py uses these instead of core directly) ---
 

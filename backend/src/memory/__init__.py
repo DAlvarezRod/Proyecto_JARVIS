@@ -1,2 +1,5 @@
-"""Memory domain package (short/long/knowledge/system migration target)."""
+"""Memory port and adapter contracts."""
 
+from .port import MemoryPort
+
+__all__ = ["MemoryPort"]
