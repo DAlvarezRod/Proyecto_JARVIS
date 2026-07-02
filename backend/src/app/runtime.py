@@ -130,13 +130,18 @@ class JarvisRuntime:
     def version(self) -> str:
         return self.core.version
 
-    async def process_text(self, text: str, task_type: str = "default") -> str:
-        response = await self.brain.think(text, task_type=task_type)
-        self.audit.record(
-            "text_processed",
-            {"task_type": task_type, "text_size": len(text)},
-        )
-        return response
+    def chat(self, text: str) -> str:
+        """Send text to the LLM with fallback to legacy."""
+        try:
+            response = self.brain.think(text, task_type="default")
+            self.audit.record(
+                "text_processed",
+                {"text_size": len(text), "response_size": len(response)},
+            )
+            return response
+        except Exception as e:
+            self.logger.error("LLM error, falling back to legacy: %s", e)
+            return self.process_user_input(text)
 
 
 def initialize_runtime(config_path: str = "config.yaml") -> JarvisRuntime:

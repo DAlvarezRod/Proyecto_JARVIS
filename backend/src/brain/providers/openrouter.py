@@ -35,7 +35,7 @@ class OpenRouterProvider(BrainProvider):
         )
         self.conversation_history: List[Dict[str, str]] = []
 
-    async def think(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
+    def think(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         self.conversation_history.append({"role": "user", "content": prompt})
 
         if len(self.conversation_history) > 20:

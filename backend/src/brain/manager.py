@@ -36,8 +36,7 @@ class BrainManager:
             return fallback
         raise RuntimeError("No brain providers registered")
 
-    async def think(self, prompt: str, task_type: str = "default") -> str:
+    def think(self, prompt: str, task_type: str = "default") -> str:
         provider = self.resolve_provider(task_type=task_type)
         self.logger.debug("Routing task '%s' to provider '%s'", task_type, provider.name)
-        return await provider.think(prompt, context={"task_type": task_type})
-
+        return provider.think(prompt, context={"task_type": task_type})

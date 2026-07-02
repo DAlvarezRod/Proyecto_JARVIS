@@ -1,202 +1,101 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { createRoot } from "react-dom/client";
-import { io } from "socket.io-client";
-import {
-  Activity,
-  Bot,
-  Camera,
-  Gauge,
-  DoorClosed,
-  Lightbulb,
-  Lock,
-  Database,
-  Mic,
-  Power,
-  Send,
-  Shield,
-  Thermometer,
-  Wifi,
-  WifiOff,
-  Zap,
-} from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import "./styles.css";
 
-const API_BASE = "";
-
-function deviceIcon(type) {
-  const props = { size: 18, strokeWidth: 2 };
-  if (type === "light") return <Lightbulb {...props} />;
-  if (type === "thermostat") return <Thermometer {...props} />;
-  if (type === "door") return <DoorClosed {...props} />;
-  if (type === "security") return <Shield {...props} />;
-  if (type === "camera") return <Camera {...props} />;
-  return <Power {...props} />;
-}
-
-function describeDevice(device) {
-  if (device.device_type === "light") {
-    return `${device.is_on ? "On" : "Off"} · ${device.brightness}% · ${device.color}`;
-  }
-  if (device.device_type === "thermostat") {
-    return `${device.target_temperature}C target · ${device.mode}`;
-  }
-  if (device.device_type === "door") {
-    return `${device.is_open ? "Open" : "Closed"} · ${device.is_locked ? "Locked" : "Unlocked"}`;
-  }
-  if (device.device_type === "security") {
-    return `${device.mode}${device.alarm_triggered ? " · alarm" : ""}`;
-  }
-  if (device.device_type === "camera") {
-    return device.is_recording ? "Recording" : "Idle";
-  }
-  return device.is_on ? "On" : "Off";
-}
+const API = "";
 
 function App() {
-  const [connected, setConnected] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [devices, setDevices] = useState([]);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  const socket = useMemo(() => io("/", { transports: ["websocket", "polling"] }), []);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
+  const chatEnd = useRef(null);
 
   useEffect(() => {
-    socket.on("connect", () => setConnected(true));
-    socket.on("disconnect", () => setConnected(false));
-    socket.on("status:update", setStatus);
-    socket.on("devices:update", setDevices);
-    socket.on("history:update", (history) => setMessages(history || []));
-    socket.on("chat:message", (payload) => {
-      setStatus(payload.status);
-      setDevices(payload.devices || []);
-      setMessages(payload.history || []);
-      setBusy(false);
-    });
-    socket.on("chat:error", () => setBusy(false));
+    fetch(`${API}/api/status`).then(r => r.json()).then(setStatus).catch(() => {});
+  }, []);
 
-    fetch(`${API_BASE}/api/status`).then((res) => res.json()).then(setStatus).catch(() => {});
-    fetch(`${API_BASE}/api/devices`).then((res) => res.json()).then(setDevices).catch(() => {});
-    fetch(`${API_BASE}/api/history`).then((res) => res.json()).then(setMessages).catch(() => {});
+  useEffect(() => {
+    chatEnd.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    return () => socket.disconnect();
-  }, [socket]);
-
-  function sendMessage(event) {
-    event.preventDefault();
-    const message = input.trim();
-    if (!message || busy) return;
-    setBusy(true);
+  const send = async () => {
+    const text = input.trim();
+    if (!text || loading) return;
     setInput("");
-    socket.emit("chat:send", { message });
-  }
-
-  async function commandDevice(device, action, value) {
-    const response = await fetch(`${API_BASE}/api/devices/command`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ device_id: device.device_id, action, value }),
-    });
-    const payload = await response.json();
-    setDevices(payload.devices || devices);
-  }
+    setMessages(prev => [...prev, { role: "user", text }]);
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+      const data = await res.json();
+      setMessages(prev => [...prev, { role: "assistant", text: data.response }]);
+      if (data.status) setStatus(data.status);
+    } catch (e) {
+      setMessages(prev => [...prev, { role: "assistant", text: "Error de conexión con el servidor." }]);
+    }
+    setLoading(false);
+  };
 
   return (
-    <main className="shell">
-      <header className="topbar">
-        <div className="brand">
-          <div className="brand-mark"><Bot size={22} /></div>
+    <div className="app">
+      <header className="header">
+        <div className="logo">
+          <div className="logo-icon">I</div>
           <div>
-            <h1>JARVIS Console</h1>
-            <p>{status?.status || "initializing"} · {status?.smart_home_devices ?? 0} devices</p>
+            <h1>Illo</h1>
+            <span className="subtitle">
+              {status ? `${status.name} · v${status.version || "2.0"} · ${status.skills_loaded || 0} skills` : "Conectando..."}
+            </span>
           </div>
         </div>
-        <div className={`connection ${connected ? "online" : "offline"}`}>
-          {connected ? <Wifi size={18} /> : <WifiOff size={18} />}
-          {connected ? "Live" : "Offline"}
-        </div>
+        <div className="status-badge">{status ? "En línea" : "Offline"}</div>
       </header>
 
-      <section className="status-strip">
-        <div><Activity size={18} /><span>Skills</span><strong>{status?.skills_registered ?? 0}</strong></div>
-        <div><Bot size={18} /><span>Custom</span><strong>{status?.custom_skills ?? 0}</strong></div>
-        <div><Shield size={18} /><span>NLU</span><strong>{status?.nlu_model || "none"}</strong></div>
-        <div><Database size={18} /><span>Memory</span><strong>{status?.memory_messages ?? 0}</strong></div>
-        <div><Gauge size={18} /><span>Latency</span><strong>{status?.performance?.last_response_ms ? `${status.performance.last_response_ms}ms` : "idle"}</strong></div>
-        <div><Mic size={18} /><span>Wake</span><strong>{status?.wake_word || "jarvis"}</strong></div>
-        <div><Zap size={18} /><span>Rules</span><strong>{status?.automation?.enabled_rules ?? 0}</strong></div>
-      </section>
-
-      <section className="workspace">
-        <section className="chat-panel">
-          <div className="panel-head">
-            <h2>Conversation</h2>
-          </div>
-          <div className="messages">
-            {messages.length === 0 && <div className="empty">Send a command to JARVIS.</div>}
-            {messages.map((message, index) => (
-              <div className={`message ${message.speaker}`} key={`${message.timestamp}-${index}`}>
-                <span>{message.speaker}</span>
-                <p>{message.text}</p>
+      <div className="main chat-only">
+        <section className="chat-section">
+          <div className="chat-messages">
+            {messages.length === 0 && (
+              <div className="empty-chat">
+                <div className="empty-icon">I</div>
+                <p>Hola, soy <strong>Illo</strong>. ¿En qué te puedo ayudar?</p>
+              </div>
+            )}
+            {messages.map((m, i) => (
+              <div key={i} className={`msg ${m.role}`}>
+                <div className="msg-label">{m.role === "user" ? "Tú" : "Illo"}</div>
+                <div className="msg-bubble">{m.text}</div>
               </div>
             ))}
+            {loading && (
+              <div className="msg assistant">
+                <div className="msg-label">Illo</div>
+                <div className="msg-bubble typing">Pensando<span className="dots">...</span></div>
+              </div>
+            )}
+            <div ref={chatEnd} />
           </div>
-          <form className="composer" onSubmit={sendMessage}>
+          <div className="chat-input">
             <input
               value={input}
-              onChange={(event) => setInput(event.target.value)}
-              placeholder="Turn on the kitchen light"
-              aria-label="Message JARVIS"
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && send()}
+              placeholder="Escríbele a Illo..."
+              disabled={loading}
             />
-            <button type="submit" disabled={busy || !input.trim()} title="Send command">
-              <Send size={18} />
+            <button onClick={send} disabled={loading || !input.trim()}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+              </svg>
             </button>
-          </form>
-        </section>
-
-        <section className="device-panel">
-          <div className="panel-head">
-            <h2>Smart Home</h2>
-          </div>
-          <div className="device-grid">
-            {devices.map((device) => (
-              <article className="device-card" key={device.device_id}>
-                <div className="device-title">
-                  <div className={`device-icon ${device.is_on ? "active" : ""}`}>
-                    {deviceIcon(device.device_type)}
-                  </div>
-                  <div>
-                    <h3>{device.name}</h3>
-                    <p>{device.location}</p>
-                  </div>
-                </div>
-                <div className="device-state">{describeDevice(device)}</div>
-                <div className="device-actions">
-                  {device.device_type === "door" ? (
-                    <>
-                      <button title="Lock" onClick={() => commandDevice(device, "lock")}><Lock size={16} /></button>
-                      <button onClick={() => commandDevice(device, "unlock")}>Unlock</button>
-                    </>
-                  ) : device.device_type === "security" ? (
-                    <>
-                      <button onClick={() => commandDevice(device, "arm", "away")}>Arm</button>
-                      <button onClick={() => commandDevice(device, "disarm")}>Disarm</button>
-                    </>
-                  ) : (
-                    <>
-                      <button onClick={() => commandDevice(device, "turn_on")}>On</button>
-                      <button onClick={() => commandDevice(device, "turn_off")}>Off</button>
-                    </>
-                  )}
-                </div>
-              </article>
-            ))}
           </div>
         </section>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }
 
+import { createRoot } from "react-dom/client";
 createRoot(document.getElementById("root")).render(<App />);

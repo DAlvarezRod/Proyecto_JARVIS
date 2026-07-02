@@ -1,0 +1,183 @@
+diff --git a/backend/.env.example b/backend/.env.example
+index 068509c..2158ad3 100644
+--- a/backend/.env.example
++++ b/backend/.env.example
+@@ -8,6 +8,20 @@ OPENWEATHERMAP_API_KEY=your_api_key_here
+ # Get free API key at: https://newsapi.org
+ NEWSAPI_KEY=your_api_key_here
+ 
++# OpenRouter (coding provider for CoderAgentSkill) — https://openrouter.ai/docs
++OPENROUTER_API_KEY=your_openrouter_api_key_here
++
++# CoderAgentSkill sandbox: comma-separated list of allowed working directories
++AGENT_ALLOWED_DIRS=C:\Proyectos
++
++# Vento (https://vento.build) — optional integration, unset by default.
++# Paths in backend/src/skills/vento/client.py are inferred from the
++# open-source repo and are NOT verified against a running instance.
++# VENTO_BASE_URL=http://localhost:3001/api/v1
++# VENTO_API_KEY=
++# VENTO_MQTT_HOST=localhost
++# VENTO_MQTT_PORT=1883
++
+ # Development/Deployment
+ FLASK_ENV=development
+ DEBUG=True
+diff --git a/backend/config.yaml b/backend/config.yaml
+index 077eecb..8e01d33 100644
+--- a/backend/config.yaml
++++ b/backend/config.yaml
+@@ -49,11 +49,25 @@ jarvis:
+     routing:
+       default: legacy_core
+       reasoning: legacy_core
+-      coding: legacy_core
++      coding: openrouter
++    providers:
++      openrouter:
++        default_model: anthropic/claude-sonnet-4
++        base_url: https://openrouter.ai/api/v1
+   security:
+     require_explicit_approval: true
+     approval_prefix: "approve:"
+     audit_log_file: "logs/audit.log"
++    sandbox:
++      allowed_dirs:
++        - "C:\\Proyectos"
++      timeout: 60
++  vento:
++    # base_url is intentionally left unset here; set VENTO_BASE_URL (or this
++    # key) only once you have a real Vento instance to point at. Paths below
++    # are inferred from the open-source Vento repo and NOT verified against
++    # a running instance -- see backend/src/skills/vento/client.py.
++    base_url: null
+   orchestrator:
+     enabled: true
+     safety:
+diff --git a/backend/src/app/runtime.py b/backend/src/app/runtime.py
+index 6aab60a..4b49c23 100644
+--- a/backend/src/app/runtime.py
++++ b/backend/src/app/runtime.py
+@@ -2,16 +2,20 @@
+ 
+ from __future__ import annotations
+ 
++import os
+ from typing import Optional
+ 
+ from core import initialize_jarvis
+ from logger import get_logger
+ 
+ from src.brain import BrainManager
+-from src.brain.providers import LegacyCoreProvider
++from src.brain.providers import LegacyCoreProvider, OpenRouterProvider
+ from src.heartbeat import EventBus, HeartbeatScheduler
+ from src.interfaces import InterfaceHub
+-from src.security import AuditLogger, AuthorizationService
++from src.security import AuditLogger, AuthorizationService, SandboxExecutor
++from src.skills.coder_agent import CoderAgentSkill
++from src.skills.vento.client import VentoClient
++from src.skills.vento.skill import VentoSkill
+ 
+ _runtime_instance: Optional["JarvisRuntime"] = None
+ 
+@@ -29,6 +33,27 @@ class JarvisRuntime:
+         )
+         self.brain.register_provider(LegacyCoreProvider(self.core))
+ 
++        openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
++        if openrouter_api_key:
++            self.brain.register_provider(
++                OpenRouterProvider(
++                    api_key=openrouter_api_key,
++                    default_model=self.core.config.get(
++                        "jarvis.brain.providers.openrouter.default_model",
++                        "anthropic/claude-sonnet-4",
++                    ),
++                    base_url=self.core.config.get(
++                        "jarvis.brain.providers.openrouter.base_url",
++                        "https://openrouter.ai/api/v1",
++                    ),
++                )
++            )
++        else:
++            self.logger.warning(
++                "OPENROUTER_API_KEY not set: OpenRouterProvider disabled, "
++                "'coding' task_type will fall back to the default provider."
++            )
++
+         self.security = AuthorizationService(
+             require_explicit_approval=self.core.config.get(
+                 "jarvis.security.require_explicit_approval",
+@@ -42,10 +67,37 @@ class JarvisRuntime:
+         self.audit = AuditLogger(
+             path=self.core.config.get("jarvis.security.audit_log_file", "logs/audit.log")
+         )
++        self.sandbox = SandboxExecutor(
++            allowed_dirs=self.core.config.get("jarvis.security.sandbox.allowed_dirs")
++            or [d.strip() for d in os.getenv("AGENT_ALLOWED_DIRS", "C:\\Proyectos").split(",") if d.strip()],
++            default_timeout=self.core.config.get("jarvis.security.sandbox.timeout", 60),
++            security=self.security,
++            audit=self.audit,
++        )
+         self.interfaces = InterfaceHub()
+         self.events = EventBus()
+         self.heartbeat = HeartbeatScheduler(self.events)
+ 
++        if "openrouter" in self.brain.providers:
++            self.core.skill_registry.register(
++                CoderAgentSkill(
++                    brain_manager=self.brain,
++                    sandbox=self.sandbox,
++                    security=self.security,
++                    audit=self.audit,
++                )
++            )
++
++        vento_base_url = os.getenv("VENTO_BASE_URL") or self.core.config.get("jarvis.vento.base_url")
++        if vento_base_url:
++            vento_client = VentoClient(
++                base_url=vento_base_url,
++                api_key=os.getenv("VENTO_API_KEY"),
++            )
++            self.core.skill_registry.register(
++                VentoSkill(vento_client=vento_client, security=self.security, audit=self.audit)
++            )
++
+     async def process_text(self, text: str, task_type: str = "default") -> str:
+         response = await self.brain.think(text, task_type=task_type)
+         self.audit.record(
+diff --git a/backend/src/brain/providers/__init__.py b/backend/src/brain/providers/__init__.py
+index af64ff0..8dd7ecc 100644
+--- a/backend/src/brain/providers/__init__.py
++++ b/backend/src/brain/providers/__init__.py
+@@ -2,6 +2,7 @@
+ 
+ from .base import BrainProvider
+ from .legacy import LegacyCoreProvider
++from .openrouter import OpenRouterError, OpenRouterProvider
+ 
+-__all__ = ["BrainProvider", "LegacyCoreProvider"]
++__all__ = ["BrainProvider", "LegacyCoreProvider", "OpenRouterProvider", "OpenRouterError"]
+ 
+diff --git a/backend/src/security/__init__.py b/backend/src/security/__init__.py
+index 6ec53c9..5bf1f7d 100644
+--- a/backend/src/security/__init__.py
++++ b/backend/src/security/__init__.py
+@@ -1,7 +1,14 @@
+-"""Security services: authorization and audit."""
++"""Security services: authorization, audit and sandboxed execution."""
+ 
+ from .audit import AuditLogger
+ from .authorization import AuthorizationService
++from .sandbox import SandboxExecutor, SandboxResult, SandboxViolation
+ 
+-__all__ = ["AuthorizationService", "AuditLogger"]
++__all__ = [
++    "AuthorizationService",
++    "AuditLogger",
++    "SandboxExecutor",
++    "SandboxResult",
++    "SandboxViolation",
++]
+ 

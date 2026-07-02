@@ -12,7 +12,6 @@ class BrainProvider(ABC):
     name: str
 
     @abstractmethod
-    async def think(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
+    def think(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Return a response for the given prompt/context."""
         raise NotImplementedError
-
