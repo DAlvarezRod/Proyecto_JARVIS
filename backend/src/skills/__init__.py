@@ -1,2 +1,5 @@
-"""Skill domain package for future decoupled skill execution."""
+"""Skill port and adapter contracts."""
 
+from .port import SkillPort
+
+__all__ = ["SkillPort"]

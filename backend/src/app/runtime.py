@@ -14,6 +14,8 @@ from src.interfaces import InterfaceHub
 from src.security import AuditLogger, AuthorizationService
 from src.memory import MemoryPort
 from src.memory.sqlite_adapter import SqliteMemoryAdapter
+from src.skills import SkillPort
+from src.skills.legacy_adapter import LegacySkillAdapter
 
 _runtime_instance: Optional["JarvisRuntime"] = None
 
@@ -50,6 +52,7 @@ class JarvisRuntime:
         self.events = EventBus()
         self.heartbeat = HeartbeatScheduler(self.events)
         self.memory_port: MemoryPort = SqliteMemoryAdapter(self.core.memory)
+        self.skill_port: SkillPort = LegacySkillAdapter(self.core)
 
     # --- Delegated API (server.py uses these instead of core directly) ---
 
