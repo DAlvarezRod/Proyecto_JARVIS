@@ -104,6 +104,17 @@ class JarvisRuntime:
     @property
     def config(self):
         return self.core.config
+    
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        return self.core.get_performance_metrics()
+
+    @property
+    def name(self) -> str:
+        return self.core.name
+
+    @property
+    def version(self) -> str:
+        return self.core.version
 
     async def process_text(self, text: str, task_type: str = "default") -> str:
         response = await self.brain.think(text, task_type=task_type)
