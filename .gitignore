@@ -122,3 +122,6 @@ secrets/
 # Si quieres compartir comandos/skills custom de Claude Code con el equipo,
 # comenta la siguiente linea y sube .claude/settings.json explicitamente:
 .claude/settings.json
+
+start_jarvis.bat
+start_jarvis.ps1
