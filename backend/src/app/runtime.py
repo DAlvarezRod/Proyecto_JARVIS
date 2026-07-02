@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from typing import Any, Dict, List, Optional
 
 from core import initialize_jarvis
@@ -9,6 +11,7 @@ from logger import get_logger
 
 from src.brain import BrainManager
 from src.brain.providers import LegacyCoreProvider
+from src.brain.providers.openrouter import OpenRouterProvider
 from src.heartbeat import EventBus, HeartbeatScheduler
 from src.interfaces import InterfaceHub
 from src.security import AuditLogger, AuthorizationService
@@ -34,6 +37,17 @@ class JarvisRuntime:
             routing=self.core.config.get("jarvis.brain.routing", {}),
         )
         self.brain.register_provider(LegacyCoreProvider(self.core))
+        openrouter_key = self.core.config.get("jarvis.brain.openrouter_api_key", "")
+        if not openrouter_key:
+            openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
+        if openrouter_key:
+            self.brain.register_provider(OpenRouterProvider(
+                api_key=openrouter_key,
+                model=self.core.config.get(
+                    "jarvis.brain.openrouter_model",
+                    "anthropic/claude-sonnet-4-20250514",
+                ),
+            ))
 
         self.security = AuthorizationService(
             require_explicit_approval=self.core.config.get(

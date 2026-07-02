@@ -6,13 +6,13 @@ jarvis:
   version: "1.0.0"
   description: "Iron Man's AI Assistant"
   wake_word: "jarvis"
-  
+
   # Voice Configuration
   voice:
-    engine: pyttsx3  # Options: pyttsx3, gtts
-    rate: 150  # Words per minute (70-300)
-    volume: 0.8  # 0.0-1.0
-    language: en  # Language code
+    engine: pyttsx3
+    rate: 150
+    volume: 0.8
+    language: en
     wake_detection:
       enabled: true
       wake_words:
@@ -20,18 +20,18 @@ jarvis:
       listen_timeout: 4
       phrase_time_limit: 6
       poll_delay: 0.2
-    
+
   # NLU Configuration
   nlu:
-    confidence_threshold: 0.7  # Minimum confidence to execute skill
-    max_context_history: 10  # Number of previous messages to remember
-    
+    confidence_threshold: 0.7
+    max_context_history: 10
+
   # API Configuration
   api:
-    timeout: 5  # Seconds to wait for API responses
+    timeout: 5
     max_retries: 3
-    retry_delay: 1  # Seconds between retries
-    
+    retry_delay: 1
+
   # Storage Configuration
   storage:
     conversation_db: "data/conversations.db"
@@ -44,16 +44,27 @@ jarvis:
   automation:
     background_enabled: true
     poll_interval: 1.0
+
+  # Brain Configuration
   brain:
-    default_provider: legacy_core
+    default_provider: openrouter
+    openrouter_api_key: ""
+    openrouter_model: "nvidia/nemotron-3-ultra-550b-a55b:free"
     routing:
-      default: legacy_core
-      reasoning: legacy_core
-      coding: legacy_core
+      default: openrouter
+      smart_home: legacy_core
+
+  # Security Configuration
   security:
     require_explicit_approval: true
     approval_prefix: "approve:"
     audit_log_file: "logs/audit.log"
+    sandbox:
+      allowed_dirs:
+        - "C:\\Proyectos"
+      timeout: 60
+
+  # Orchestrator Configuration
   orchestrator:
     enabled: true
     safety:
@@ -76,13 +87,13 @@ jarvis:
 
 # Logging Configuration
 logging:
-  level: DEBUG  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: DEBUG
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   file: "logs/jarvis.log"
-  max_size_mb: 10  # Rotate log when it reaches this size
-  backup_count: 5  # Keep this many backup logs
+  max_size_mb: 10
+  backup_count: 5
 
-# Skills Configuration (Phase 6)
+# Skills Configuration
 skills:
   enabled:
     - greeting
@@ -92,15 +103,14 @@ skills:
     - weather
     - news
     - orchestrator
-  
-  # Individual skill configs
+
   greeting:
     enabled: true
-  
+
   time:
     enabled: true
     timezone: America/Bogota
-    
+
   smart_home:
     enabled: true
     auto_save_state: true
