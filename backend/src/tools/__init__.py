@@ -8,3 +8,6 @@ from .git_tool import GitTool
 from .system_info import SystemInfoTool
 from .web_tool import WebTool
 from .app_tool import AppTool
+from .clipboard_tool import ClipboardTool
+from .screenshot_tool import ScreenshotTool
+from .notification_tool import NotificationTool
