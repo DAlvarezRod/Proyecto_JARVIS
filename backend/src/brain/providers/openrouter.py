@@ -24,6 +24,9 @@ class OpenRouterProvider(BrainProvider):
             "Cuando una herramienta devuelve 'CONFIRMACION REQUERIDA', "
             "debes preguntar al usuario si desea continuar. "
             "Solo ejecuta la accion de nuevo cuando el usuario confirme."
+            "Tienes memoria persistente. Cuando el usuario te pida recordar algo, usa memory_save. "
+            "Cuando pregunte si recuerdas algo, usa memory_search. "
+            "Guarda automaticamente datos importantes como nombres, preferencias y proyectos del usuario."
         )
         self.conversation_history = []
         self.tool_manager = None

@@ -11,3 +11,4 @@ from .app_tool import AppTool
 from .clipboard_tool import ClipboardTool
 from .screenshot_tool import ScreenshotTool
 from .notification_tool import NotificationTool
+from .memory_tool import MemoryTool
