@@ -21,6 +21,9 @@ class OpenRouterProvider(BrainProvider):
             "Cuando pregunten la fecha u hora, usa get_current_datetime. "
             "Cuando pidan ver archivos, usa list_files. "
             "Antes de eliminar, pide confirmacion."
+            "Cuando una herramienta devuelve 'CONFIRMACION REQUERIDA', "
+            "debes preguntar al usuario si desea continuar. "
+            "Solo ejecuta la accion de nuevo cuando el usuario confirme."
         )
         self.conversation_history = []
         self.tool_manager = None

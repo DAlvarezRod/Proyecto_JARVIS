@@ -6,6 +6,7 @@ from .base import Tool
 class ToolManager:
     def __init__(self):
         self._tools: Dict[str, Tool] = {}
+        self.security = None
 
     def register(self, tool: Tool) -> None:
         self._tools[tool.name] = tool
@@ -18,6 +19,11 @@ class ToolManager:
         return defs
 
     def execute(self, function_name: str, arguments: Dict[str, Any]) -> str:
+        if self.security:
+            allowed, msg = self.security.check(function_name, arguments)
+            if not allowed:
+                return msg
+
         for tool in self._tools.values():
             for fn_def in tool.get_definitions():
                 if fn_def["name"] == function_name:

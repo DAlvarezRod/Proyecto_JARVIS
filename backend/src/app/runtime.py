@@ -15,6 +15,7 @@ from src.memory.sqlite_adapter import SqliteMemoryAdapter
 from src.skills import SkillPort
 from src.skills.legacy_adapter import LegacySkillAdapter
 from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool
+from src.tools.security import SecurityManager
 
 _runtime_instance = None
 
@@ -34,6 +35,7 @@ class JarvisRuntime:
             openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
         if openrouter_key:
             tool_manager = ToolManager()
+            tool_manager.security = SecurityManager()
             tool_manager.register(FilesystemTool())
             tool_manager.register(DateTimeTool())
             tool_manager.register(TerminalTool())
