@@ -47,12 +47,12 @@ jarvis:
 
   # Brain Configuration
   brain:
-    default_provider: openrouter
-    openrouter_api_key: ""
-    openrouter_model: "nvidia/nemotron-3-ultra-550b-a55b:free"
-    routing:
-      default: openrouter
-      smart_home: legacy_core
+  default_provider: openrouter
+  openrouter_api_key: ""
+  openrouter_model: "openai/gpt-4o-mini"
+  routing:
+    default: openrouter
+    smart_home: legacy_core
 
   # Security Configuration
   security:
