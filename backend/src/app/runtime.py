@@ -14,7 +14,7 @@ from src.memory import MemoryPort
 from src.memory.sqlite_adapter import SqliteMemoryAdapter
 from src.skills import SkillPort
 from src.skills.legacy_adapter import LegacySkillAdapter
-from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool
+from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool
 
 _runtime_instance = None
 
@@ -41,6 +41,7 @@ class JarvisRuntime:
             tool_manager.register(GitTool())
             tool_manager.register(SystemInfoTool())
             tool_manager.register(WebTool())
+            tool_manager.register(AppTool())
             provider = OpenRouterProvider(
                 api_key=openrouter_key,
                 model=self.core.config.get("jarvis.brain.openrouter_model", "openai/gpt-4o-mini"),

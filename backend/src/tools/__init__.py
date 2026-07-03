@@ -7,3 +7,4 @@ from .search import SearchTool
 from .git_tool import GitTool
 from .system_info import SystemInfoTool
 from .web_tool import WebTool
+from .app_tool import AppTool
