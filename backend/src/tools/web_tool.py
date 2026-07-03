@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 import urllib.request
-import json
+import re
 
 
 class WebTool:
@@ -15,7 +15,19 @@ class WebTool:
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "query": {"type": "string", "description": "Texto a buscar en internet"},
+                        "query": {"type": "string", "description": "Texto a buscar"},
+                        "count": {"type": "integer", "description": "Cantidad de resultados. Default: 5"},
+                    },
+                    "required": ["query"],
+                },
+            },
+            {
+                "name": "web_search_news",
+                "description": "Busca noticias recientes y resultados en tiempo real. Usar para deportes en vivo, clima, noticias del momento.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "query": {"type": "string", "description": "Texto a buscar en noticias"},
                         "count": {"type": "integer", "description": "Cantidad de resultados. Default: 5"},
                     },
                     "required": ["query"],
@@ -36,25 +48,10 @@ class WebTool:
 
     def execute(self, function_name, arguments):
         if function_name == "web_search":
-            query = arguments.get("query", "")
-            count = arguments.get("count", 5)
-            if not query:
-                return "Error: query vacia"
-            try:
-                from duckduckgo_search import DDGS
-                results = DDGS().text(query, max_results=count)
-                if not results:
-                    return "No se encontraron resultados para: " + query
-                lines = []
-                for i, r in enumerate(results, 1):
-                    lines.append(
-                        str(i) + ". " + r.get("title", "")
-                        + "\n   " + r.get("href", "")
-                        + "\n   " + r.get("body", "")[:200]
-                    )
-                return "Resultados para '" + query + "':\n\n" + "\n\n".join(lines)
-            except Exception as e:
-                return "Error buscando: " + str(e)
+            return self._search(arguments, news=False)
+
+        elif function_name == "web_search_news":
+            return self._search(arguments, news=True)
 
         elif function_name == "fetch_url":
             url = arguments.get("url", "")
@@ -64,7 +61,6 @@ class WebTool:
                 req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
                 with urllib.request.urlopen(req, timeout=15) as resp:
                     content = resp.read().decode("utf-8", errors="ignore")
-                import re
                 content = re.sub(r"<script[^>]*>.*?</script>", "", content, flags=re.DOTALL)
                 content = re.sub(r"<style[^>]*>.*?</style>", "", content, flags=re.DOTALL)
                 content = re.sub(r"<[^>]+>", " ", content)
@@ -76,3 +72,32 @@ class WebTool:
                 return "Error abriendo URL: " + str(e)
 
         return "Funcion no encontrada"
+
+    def _search(self, arguments, news=False):
+        query = arguments.get("query", "")
+        count = arguments.get("count", 5)
+        if not query:
+            return "Error: query vacia"
+        try:
+            from duckduckgo_search import DDGS
+            ddgs = DDGS()
+            if news:
+                results = ddgs.news(query, max_results=count)
+            else:
+                results = ddgs.text(query, max_results=count)
+            if not results:
+                return "No se encontraron resultados para: " + query
+            lines = []
+            for i, r in enumerate(results, 1):
+                title = r.get("title", "")
+                url = r.get("href", "") or r.get("url", "")
+                body = r.get("body", "")[:200]
+                date = r.get("date", "")
+                line = str(i) + ". " + title + "\n   " + url + "\n   " + body
+                if date:
+                    line += "\n   Fecha: " + date
+                lines.append(line)
+            kind = "Noticias" if news else "Resultados"
+            return kind + " para '" + query + "':\n\n" + "\n\n".join(lines)
+        except Exception as e:
+            return "Error buscando: " + str(e)

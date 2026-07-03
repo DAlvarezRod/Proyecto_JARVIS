@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import os
+import tempfile
+
 import asyncio
 import sys
 from pathlib import Path
@@ -70,6 +73,24 @@ def create_app(
     @app.get("/api/devices")
     def devices():
         return jsonify(device_payload())
+
+    @app.post("/api/transcribe")
+    def transcribe_audio():
+        if "audio" not in request.files:
+            return jsonify({"error": "No audio file"}), 400
+        audio_file = request.files["audio"]
+        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as f:
+            audio_file.save(f.name)
+            temp_path = f.name
+        try:
+            from src.speech.transcriber import Transcriber
+            transcriber = Transcriber()
+            text, error = transcriber.transcribe(temp_path)
+        finally:
+            os.unlink(temp_path)
+        if error:
+            return jsonify({"error": error}), 500
+        return jsonify({"text": text})
 
     @app.post("/api/chat")
     def chat():

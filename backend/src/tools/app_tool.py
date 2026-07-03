@@ -23,7 +23,7 @@ APP_SHORTCUTS = {
     "teams": "msteams",
     "discord": "discord",
     "telegram": "telegram",
-    "whatsapp": "whatsapp",
+    "whatsapp": "whatsapp:",
     "spotify": "spotify",
     "steam": "steam",
     "epic games": "com.epicgames.launcher:",
@@ -51,6 +51,7 @@ APP_SHORTCUTS = {
     "blender": "blender",
     "unity": "unity",
     "unreal engine": "UnrealEditor",
+    "codex": "cmd /k codex",
 }
 
 STEAM_GAMES = {
@@ -161,6 +162,11 @@ class AppTool(Tool):
             name_lower = name.lower()
 
             steam_id = STEAM_GAMES.get(name_lower)
+            if not steam_id:
+                for key, sid in STEAM_GAMES.items():
+                    if name_lower in key or key in name_lower:
+                        steam_id = sid
+                        break
             if steam_id:
                 if steam_id in ("minecraft", "fortnite", "valorant", "league"):
                     try:

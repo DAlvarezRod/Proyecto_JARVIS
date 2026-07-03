@@ -28,6 +28,8 @@ class OpenRouterProvider(BrainProvider):
             "Tienes memoria persistente. Cuando el usuario te pida recordar algo, usa memory_save. "
             "Cuando pregunte si recuerdas algo, usa memory_search. "
             "Guarda automaticamente datos importantes como nombres, preferencias y proyectos del usuario."
+            "Cuando pregunten por resultados deportivos, noticias, clima, o cualquier informacion actual, usa web_search. "
+            "Para resultados deportivos en vivo, clima actual, o noticias del momento, usa web_search_news. "
         )
         self.conversation_history = []
         self.tool_manager = None

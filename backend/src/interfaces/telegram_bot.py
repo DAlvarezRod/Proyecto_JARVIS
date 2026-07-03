@@ -1,3 +1,5 @@
+import os
+import tempfile
 import threading
 import telebot
 
@@ -5,28 +7,53 @@ import telebot
 def start_telegram_bot(token, runtime):
     bot = telebot.TeleBot(token)
 
-    @bot.message_handler(commands=["start"])
-    def handle_start(message):
-        bot.reply_to(message, "Hola! Soy Illo, tu asistente. Escribe lo que necesites.")
+    transcriber = None
+    if os.environ.get("GROQ_API_KEY", "") or os.environ.get("OPENAI_API_KEY", ""):
+        from src.speech.transcriber import Transcriber
+        transcriber = Transcriber()
+        print("[TELEGRAM] STT habilitado", flush=True)
+
+    @bot.message_handler(content_types=["voice", "audio"])
+    def handle_voice(message):
+        if not transcriber:
+            bot.reply_to(message, "STT no configurado. Necesito GROQ_API_KEY o OPENAI_API_KEY.")
+            return
+        try:
+            file_id = message.voice.file_id if message.voice else message.audio.file_id
+            file_info = bot.get_file(file_id)
+            downloaded = bot.download_file(file_info.file_path)
+
+            with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as f:
+                f.write(downloaded)
+                temp_path = f.name
+
+            text, error = transcriber.transcribe(temp_path)
+            os.unlink(temp_path)
+
+            if error:
+                bot.reply_to(message, "Error STT: " + error)
+                return
+            if not text or not text.strip():
+                bot.reply_to(message, "No pude entender el audio.")
+                return
+
+            bot.reply_to(message, "Escuche: " + text)
+            response = runtime.chat(text)
+            bot.send_message(message.chat.id, response)
+        except Exception as e:
+            bot.reply_to(message, "Error: " + str(e))
 
     @bot.message_handler(func=lambda m: True)
     def handle_message(message):
-        try:
-            print("[TELEGRAM] Mensaje de " + str(message.from_user.first_name) + ": " + message.text[:60], flush=True)
-            response = runtime.chat(message.text)
-            if len(response) > 4000:
-                for i in range(0, len(response), 4000):
-                    bot.reply_to(message, response[i:i+4000])
-            else:
-                bot.reply_to(message, response)
-            print("[TELEGRAM] Respuesta enviada OK", flush=True)
-        except Exception as e:
-            print("[TELEGRAM] Error: " + str(e), flush=True)
-            bot.reply_to(message, "Error procesando tu mensaje. Intenta de nuevo.")
+        response = runtime.chat(message.text)
+        bot.reply_to(message, response)
 
     def run_bot():
-        print("[TELEGRAM] Bot iniciado, esperando mensajes...", flush=True)
-        bot.infinity_polling()
+        while True:
+            try:
+                bot.infinity_polling()
+            except Exception as e:
+                print("[TELEGRAM] Error: " + str(e) + " - reconectando...", flush=True)
 
     thread = threading.Thread(target=run_bot, daemon=True)
     thread.start()
