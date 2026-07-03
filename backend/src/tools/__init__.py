@@ -13,3 +13,4 @@ from .screenshot_tool import ScreenshotTool
 from .notification_tool import NotificationTool
 from .memory_tool import MemoryTool
 from .media_tool import MediaTool
+from .email_tool import EmailTool

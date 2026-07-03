@@ -14,7 +14,7 @@ from src.memory import MemoryPort
 from src.memory.sqlite_adapter import SqliteMemoryAdapter
 from src.skills import SkillPort
 from src.skills.legacy_adapter import LegacySkillAdapter
-from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool, MemoryTool, MediaTool
+from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool, MemoryTool, MediaTool, EmailTool
 from src.tools.security import SecurityManager
 
 _runtime_instance = None
@@ -49,6 +49,7 @@ class JarvisRuntime:
             tool_manager.register(NotificationTool())
             tool_manager.register(MemoryTool())
             tool_manager.register(MediaTool())
+            tool_manager.register(EmailTool())
             provider = OpenRouterProvider(
                 api_key=openrouter_key,
                 model=self.core.config.get("jarvis.brain.openrouter_model", "openai/gpt-4o-mini"),
