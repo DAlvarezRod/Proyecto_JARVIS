@@ -9,10 +9,11 @@ from .base import BrainProvider
 class OpenRouterProvider(BrainProvider):
     name = "openrouter"
 
-    def __init__(self, api_key, model="openai/gpt-4o-mini", max_tokens=1024):
+    def __init__(self, api_key, model="openai/gpt-4o-mini", max_tokens=1024, router=None):
         self.api_key = api_key
         self.model = model
         self.max_tokens = max_tokens
+        self.router = router
         self.system_prompt = (
             "Eres Illo, un asistente de IA avanzado creado por David Alvarez. "
             "Respondes siempre en espanol. Eres util, preciso y amigable. "
@@ -32,6 +33,9 @@ class OpenRouterProvider(BrainProvider):
         self.tool_manager = None
 
     def _call_api(self, messages, tools=None):
+        if self.router:
+            return self.router.chat(messages, tools, self.max_tokens)
+
         body = {"model": self.model, "messages": messages, "max_tokens": self.max_tokens}
         if tools:
             body["tools"] = tools

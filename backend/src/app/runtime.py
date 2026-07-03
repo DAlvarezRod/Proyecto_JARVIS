@@ -7,6 +7,7 @@ from logger import get_logger
 from src.brain import BrainManager
 from src.brain.providers import LegacyCoreProvider
 from src.brain.providers.openrouter import OpenRouterProvider
+from src.brain.model_router import create_router
 from src.heartbeat import EventBus, HeartbeatScheduler
 from src.interfaces import InterfaceHub
 from src.security import AuditLogger, AuthorizationService
@@ -14,7 +15,7 @@ from src.memory import MemoryPort
 from src.memory.sqlite_adapter import SqliteMemoryAdapter
 from src.skills import SkillPort
 from src.skills.legacy_adapter import LegacySkillAdapter
-from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool, MemoryTool, MediaTool, EmailTool, CalendarTool
+from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool, MemoryTool, MediaTool, EmailTool, CalendarTool, RouterTool
 from src.tools.security import SecurityManager
 
 _runtime_instance = None
@@ -34,6 +35,9 @@ class JarvisRuntime:
         if not openrouter_key:
             openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
         if openrouter_key:
+            default_model = self.core.config.get("jarvis.brain.openrouter_model", "openai/gpt-4o-mini")
+            router = create_router(default_model=default_model)
+
             tool_manager = ToolManager()
             tool_manager.security = SecurityManager()
             tool_manager.register(FilesystemTool())
@@ -51,13 +55,17 @@ class JarvisRuntime:
             tool_manager.register(MediaTool())
             tool_manager.register(EmailTool())
             tool_manager.register(CalendarTool())
+            tool_manager.register(RouterTool(router))
+
             provider = OpenRouterProvider(
                 api_key=openrouter_key,
-                model=self.core.config.get("jarvis.brain.openrouter_model", "openai/gpt-4o-mini"),
+                model=default_model,
+                router=router,
             )
             provider.tool_manager = tool_manager
             self.brain.register_provider(provider)
             print("[RUNTIME] OpenRouter provider with " + str(len(tool_manager.get_definitions())) + " tools", flush=True)
+
         telegram_token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
         if telegram_token:
             from src.interfaces.telegram_bot import start_telegram_bot

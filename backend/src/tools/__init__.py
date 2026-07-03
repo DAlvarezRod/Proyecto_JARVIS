@@ -15,3 +15,4 @@ from .memory_tool import MemoryTool
 from .media_tool import MediaTool
 from .email_tool import EmailTool
 from .calendar_tool import CalendarTool
+from .router_tool import RouterTool
