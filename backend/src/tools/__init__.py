@@ -5,3 +5,5 @@ from .datetime_tool import DateTimeTool
 from .terminal import TerminalTool
 from .search import SearchTool
 from .git_tool import GitTool
+from .system_info import SystemInfoTool
+from .web_tool import WebTool

@@ -14,7 +14,7 @@ from src.memory import MemoryPort
 from src.memory.sqlite_adapter import SqliteMemoryAdapter
 from src.skills import SkillPort
 from src.skills.legacy_adapter import LegacySkillAdapter
-from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool
+from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool
 
 _runtime_instance = None
 
@@ -39,6 +39,8 @@ class JarvisRuntime:
             tool_manager.register(TerminalTool())
             tool_manager.register(SearchTool())
             tool_manager.register(GitTool())
+            tool_manager.register(SystemInfoTool())
+            tool_manager.register(WebTool())
             provider = OpenRouterProvider(
                 api_key=openrouter_key,
                 model=self.core.config.get("jarvis.brain.openrouter_model", "openai/gpt-4o-mini"),
@@ -46,6 +48,11 @@ class JarvisRuntime:
             provider.tool_manager = tool_manager
             self.brain.register_provider(provider)
             print("[RUNTIME] OpenRouter provider with " + str(len(tool_manager.get_definitions())) + " tools", flush=True)
+        telegram_token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+        if telegram_token:
+            from src.interfaces.telegram_bot import start_telegram_bot
+            start_telegram_bot(telegram_token, self)
+            print("[RUNTIME] Telegram bot conectado", flush=True)
 
         self.security = AuthorizationService(
             require_explicit_approval=self.core.config.get("jarvis.security.require_explicit_approval", True),
