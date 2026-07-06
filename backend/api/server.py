@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 
@@ -91,6 +91,19 @@ def create_app(
         if error:
             return jsonify({"error": error}), 500
         return jsonify({"text": text})
+
+    @app.post("/api/tts")
+    def tts():
+        payload = request.get_json(silent=True) or {}
+        text = str(payload.get("text", "")).strip()
+        if not text:
+            return jsonify({"error": "text is required"}), 400
+        from src.speech.tts import TTSService
+        service = TTSService()
+        audio, error = service.synthesize(text)
+        if error:
+            return jsonify({"error": error}), 500
+        return Response(audio, mimetype="audio/wav")
 
     @app.post("/api/chat")
     def chat():

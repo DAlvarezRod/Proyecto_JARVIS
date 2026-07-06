@@ -1,4 +1,5 @@
 import os
+import io
 import tempfile
 import threading
 import telebot
@@ -12,6 +13,12 @@ def start_telegram_bot(token, runtime):
         from src.speech.transcriber import Transcriber
         transcriber = Transcriber()
         print("[TELEGRAM] STT habilitado", flush=True)
+
+    tts = None
+    if os.environ.get("GROQ_API_KEY", ""):
+        from src.speech.tts import TTSService
+        tts = TTSService()
+        print("[TELEGRAM] TTS habilitado", flush=True)
 
     @bot.message_handler(content_types=["voice", "audio"])
     def handle_voice(message):
@@ -40,6 +47,15 @@ def start_telegram_bot(token, runtime):
             bot.reply_to(message, "Escuche: " + text)
             response = runtime.chat(text)
             bot.send_message(message.chat.id, response)
+
+            if tts:
+                try:
+                    audio, tts_error = tts.synthesize(response)
+                    if audio and not tts_error:
+                        bot.send_voice(message.chat.id, io.BytesIO(audio))
+                except Exception as e:
+                    print("[TELEGRAM] TTS error: " + str(e), flush=True)
+
         except Exception as e:
             bot.reply_to(message, "Error: " + str(e))
 

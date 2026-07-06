@@ -79,7 +79,7 @@ class WebTool:
         if not query:
             return "Error: query vacia"
         try:
-            from duckduckgo_search import DDGS
+            from ddgs import DDGS
             ddgs = DDGS()
             if news:
                 results = ddgs.news(query, max_results=count)

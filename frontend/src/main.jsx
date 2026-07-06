@@ -71,6 +71,8 @@ function App() {
   const [isListening, setIsListening] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [ttsEnabled, setTtsEnabled] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const chatEnd = useRef(null);
   const audioCtxRef = useRef(null);
   const streamRef = useRef(null);
@@ -110,6 +112,23 @@ function App() {
       const data = await res.json();
       setMessages(prev => [...prev, { role: "assistant", text: data.response }]);
       if (data.status) setStatus(data.status);
+      if (ttsEnabled && data.response) {
+        setSpeaking(true);
+        try {
+          const audioRes = await fetch(API + "/api/tts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: data.response }),
+          });
+          if (audioRes.ok) {
+            const blob = await audioRes.blob();
+            const audioUrl = URL.createObjectURL(blob);
+            const audio = new Audio(audioUrl);
+            audio.onended = () => { URL.revokeObjectURL(audioUrl); setSpeaking(false); };
+            audio.play();
+          } else { setSpeaking(false); }
+        } catch (e) { setSpeaking(false); }
+      }
     } catch (e) {
       setMessages(prev => [...prev, { role: "assistant", text: "Error de conexion con el servidor." }]);
     }
@@ -212,6 +231,31 @@ function App() {
             <span className="subtitle">
               {status ? status.name + " v" + (status.version || "2.0") + " | " + (status.skills_registered || 0) + " skills" : "Conectando..."}
             </span>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <button
+            className={"tts-btn" + (ttsEnabled ? " active" : "") + (speaking ? " speaking" : "")}
+            onClick={() => setTtsEnabled(!ttsEnabled)}
+            title={ttsEnabled ? "Desactivar voz" : "Activar voz"}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              {ttsEnabled ? (
+                <>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </>
+              ) : (
+                <>
+                  <line x1="23" y1="9" x2="17" y2="15"/>
+                  <line x1="17" y1="9" x2="23" y2="15"/>
+                </>
+              )}
+            </svg>
+          </button>
+          <div className={"status-badge" + (status ? "" : " offline")}>
+            {status ? "EN LINEA" : "OFFLINE"}
           </div>
         </div>
         <div className={"status-badge" + (status ? "" : " offline")}>

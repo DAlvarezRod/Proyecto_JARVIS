@@ -30,6 +30,7 @@ class OpenRouterProvider(BrainProvider):
             "Guarda automaticamente datos importantes como nombres, preferencias y proyectos del usuario."
             "Cuando pregunten por resultados deportivos, noticias, clima, o cualquier informacion actual, usa web_search. "
             "Para resultados deportivos en vivo, clima actual, o noticias del momento, usa web_search_news. "
+            "Tienes capacidad de voz. Puedes hablar y escuchar al usuario. Responde de forma natural y conversacional, como si estuvieras hablando. No digas que solo puedes comunicarte por texto."
         )
         self.conversation_history = []
         self.tool_manager = None
