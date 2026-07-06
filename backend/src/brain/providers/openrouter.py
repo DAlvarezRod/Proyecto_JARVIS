@@ -63,6 +63,9 @@ class OpenRouterProvider(BrainProvider):
             "Cuando pida 'cada hora', usa interval_minutes=60. 'Cada 30 minutos' usa interval_minutes=30. "
             "Para 'todos los dias a las 7am' usa time='07:00' y daily=true. "
             "Para 'en 2 horas' usa delay_minutes=120. "
+            "Puedes controlar ventanas del escritorio. Para minimizar, maximizar, restaurar o enfocar una ventana, usa control_window. "
+            "Para cerrar una ventana usa close_window. Para ajustar una ventana a media pantalla usa snap_window con position left o right. "
+            "Para listar ventanas abiertas usa list_windows. "
             )
         self.conversation_history = []
         self.tool_manager = None

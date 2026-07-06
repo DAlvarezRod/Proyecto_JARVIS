@@ -22,3 +22,4 @@ from .system_control_tool import SystemControlTool
 from .timer_tool import TimerTool
 from .document_tool import DocumentTool
 from .scheduler_tool import SchedulerTool
+from .window_tool import WindowTool
