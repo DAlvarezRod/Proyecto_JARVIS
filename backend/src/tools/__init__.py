@@ -18,3 +18,4 @@ from .calendar_tool import CalendarTool
 from .router_tool import RouterTool
 from .code_tool import CodeTool
 from .phone_tool import PhoneTool
+from .system_control_tool import SystemControlTool
