@@ -1,7 +1,30 @@
 from typing import Any, Dict, List
 import urllib.request
 import re
+import webbrowser
 
+WEBSITE_SHORTCUTS = {
+    "youtube": "https://www.youtube.com",
+    "gmail": "https://mail.google.com",
+    "google": "https://www.google.com",
+    "twitter": "https://twitter.com",
+    "x": "https://twitter.com",
+    "facebook": "https://www.facebook.com",
+    "instagram": "https://www.instagram.com",
+    "whatsapp web": "https://web.whatsapp.com",
+    "reddit": "https://www.reddit.com",
+    "github": "https://github.com",
+    "chatgpt": "https://chat.openai.com",
+    "netflix": "https://www.netflix.com",
+    "amazon": "https://www.amazon.com",
+    "twitch": "https://www.twitch.tv",
+    "tiktok": "https://www.tiktok.com",
+    "linkedin": "https://www.linkedin.com",
+    "wikipedia": "https://es.wikipedia.org",
+    "maps": "https://maps.google.com",
+    "drive": "https://drive.google.com",
+    "calendar": "https://calendar.google.com",
+}
 
 class WebTool:
     name = "web"
@@ -44,6 +67,17 @@ class WebTool:
                     "required": ["url"],
                 },
             },
+            {
+                "name": "open_website",
+                "description": "Abre una pagina web en el navegador predeterminado. Puede recibir un nombre de sitio conocido (youtube, gmail, google, twitter, netflix, etc) o una URL completa.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "url": {"type": "string", "description": "URL completa o nombre del sitio (youtube, gmail, google, twitter, etc)"},
+                    },
+                    "required": ["url"],
+                },
+            },
         ]
 
     def execute(self, function_name, arguments):
@@ -70,6 +104,18 @@ class WebTool:
                 return "Contenido de " + url + ":\n\n" + content
             except Exception as e:
                 return "Error abriendo URL: " + str(e)
+
+        elif function_name == "open_website":
+            url = arguments.get("url", "").strip()
+            if not url:
+                return "Error: URL requerida"
+            url_lower = url.lower()
+            if url_lower in WEBSITE_SHORTCUTS:
+                url = WEBSITE_SHORTCUTS[url_lower]
+            elif not url.startswith("http"):
+                url = "https://www." + url_lower + ".com"
+            webbrowser.open(url)
+            return "Abriendo " + url + " en el navegador"
 
         return "Funcion no encontrada"
 

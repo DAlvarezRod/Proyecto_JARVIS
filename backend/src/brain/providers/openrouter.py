@@ -44,6 +44,7 @@ class OpenRouterProvider(BrainProvider):
             "Cuando el usuario te pida crear codigo, un script, una pagina web, o programar algo, "
             "SIEMPRE usa write_code para guardar el archivo y abrirlo en VSCode automaticamente. "
             "No muestres el codigo en el chat, escribelo directamente en un archivo."
+            "No puedes cerrar pestanas individuales del navegador. Si te piden cerrar un sitio web (YouTube, Gmail, etc), dile al usuario que no puedes cerrar solo esa pestana, pero ofrece cerrar todo el navegador si quiere."
         )
         self.conversation_history = []
         self.tool_manager = None
