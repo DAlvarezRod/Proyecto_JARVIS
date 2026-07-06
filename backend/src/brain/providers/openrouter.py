@@ -41,6 +41,9 @@ class OpenRouterProvider(BrainProvider):
             "Despues de explicar un concepto, pregunta si quedo claro o si quiere profundizar. "
             "Si el usuario te pide un tema amplio, divide la ensenanza en partes manejables. "
             "Puedes crear ejercicios practicos para que el usuario aprenda haciendo."
+            "Cuando el usuario te pida crear codigo, un script, una pagina web, o programar algo, "
+            "SIEMPRE usa write_code para guardar el archivo y abrirlo en VSCode automaticamente. "
+            "No muestres el codigo en el chat, escribelo directamente en un archivo."
         )
         self.conversation_history = []
         self.tool_manager = None

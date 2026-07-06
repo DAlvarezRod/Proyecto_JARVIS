@@ -16,3 +16,4 @@ from .media_tool import MediaTool
 from .email_tool import EmailTool
 from .calendar_tool import CalendarTool
 from .router_tool import RouterTool
+from .code_tool import CodeTool

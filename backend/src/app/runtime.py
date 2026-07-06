@@ -15,7 +15,7 @@ from src.memory import MemoryPort
 from src.memory.sqlite_adapter import SqliteMemoryAdapter
 from src.skills import SkillPort
 from src.skills.legacy_adapter import LegacySkillAdapter
-from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool, MemoryTool, MediaTool, EmailTool, CalendarTool, RouterTool
+from src.tools import ToolManager, FilesystemTool, DateTimeTool, TerminalTool, SearchTool, GitTool, SystemInfoTool, WebTool, AppTool, ClipboardTool, ScreenshotTool, NotificationTool, MemoryTool, MediaTool, EmailTool, CalendarTool, RouterTool, CodeTool
 from src.tools.security import SecurityManager
 
 _runtime_instance = None
@@ -56,6 +56,7 @@ class JarvisRuntime:
             tool_manager.register(EmailTool())
             tool_manager.register(CalendarTool())
             tool_manager.register(RouterTool(router))
+            tool_manager.register(CodeTool())
 
             provider = OpenRouterProvider(
                 api_key=openrouter_key,
