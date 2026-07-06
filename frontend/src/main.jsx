@@ -7,6 +7,8 @@ function VaderFace({ size = 120, audioLevel = 0, listening = false }) {
   const scale = listening ? 1 + audioLevel * 0.15 : 1;
   const glow = listening ? 4 + audioLevel * 25 : 0;
   const eyeBright = 0.5 + audioLevel * 0.5;
+  const droolLen = 8 + (listening ? audioLevel * 15 : 0);
+  const mouthH = 8 + (listening ? audioLevel * 5 : 0);
 
   return (
     <svg viewBox="0 0 120 120" width={size} height={size}
@@ -17,7 +19,7 @@ function VaderFace({ size = 120, audioLevel = 0, listening = false }) {
       }}
     >
       <defs>
-        <radialGradient id="helmet" cx="50%" cy="35%" r="60%">
+        <radialGradient id="catHead" cx="50%" cy="40%" r="55%">
           <stop offset="0%" stopColor="#132d3e"/>
           <stop offset="100%" stopColor="#081820"/>
         </radialGradient>
@@ -25,43 +27,49 @@ function VaderFace({ size = 120, audioLevel = 0, listening = false }) {
           <stop offset="0%" stopColor="#87CEEB" stopOpacity="0.9"/>
           <stop offset="100%" stopColor="#87CEEB" stopOpacity="0"/>
         </radialGradient>
-        <linearGradient id="mouthGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0d1f2d"/>
-          <stop offset="100%" stopColor="#061018"/>
-        </linearGradient>
       </defs>
-      <path d="M60 8 C28 8 12 28 12 52 C12 68 18 82 30 92 Q44 104 60 106 Q76 104 90 92 C102 82 108 68 108 52 C108 28 92 8 60 8Z" fill="url(#helmet)" stroke="#87CEEB" strokeWidth="0.8" strokeOpacity="0.4"/>
-      <path d="M60 8 C60 8 60 10 60 42" stroke="#87CEEB" strokeWidth="1.2" opacity="0.3"/>
-      <path d="M18 48 Q60 32 102 48" fill="none" stroke="#87CEEB" strokeWidth="1.5" opacity="0.3"/>
-      <path d="M16 52 Q14 68 22 85" fill="none" stroke="#87CEEB" strokeWidth="1" opacity="0.2"/>
-      <path d="M104 52 Q106 68 98 85" fill="none" stroke="#87CEEB" strokeWidth="1" opacity="0.2"/>
-      <path d="M22 50 L22 72 L30 78" fill="none" stroke="#87CEEB" strokeWidth="0.7" opacity="0.15"/>
-      <path d="M98 50 L98 72 L90 78" fill="none" stroke="#87CEEB" strokeWidth="0.7" opacity="0.15"/>
-      <ellipse cx="46" cy="22" rx="18" ry="8" fill="#87CEEB" opacity="0.04"/>
-      <path d="M26 52 L42 46 L60 50 L78 46 L94 52" fill="none" stroke="#87CEEB" strokeWidth="1.8" strokeLinejoin="round" opacity="0.5"/>
-      <path d="M30 56 L44 50 L50 58 L48 64 L32 64Z" fill="#061018" stroke="#87CEEB" strokeWidth="0.8" strokeLinejoin="round" strokeOpacity="0.3"/>
-      <path d="M90 56 L76 50 L70 58 L72 64 L88 64Z" fill="#061018" stroke="#87CEEB" strokeWidth="0.8" strokeLinejoin="round" strokeOpacity="0.3"/>
-      <circle cx="40" cy="57" r="8" fill="url(#eyeGlow)" style={listening ? { opacity: eyeBright } : undefined} className="eye-glow"/>
-      <circle cx="80" cy="57" r="8" fill="url(#eyeGlow)" style={listening ? { opacity: eyeBright } : undefined} className="eye-glow"/>
-      <ellipse cx="40" cy="57" rx="4" ry="3" fill="#87CEEB" style={listening ? { opacity: eyeBright } : undefined} className={listening ? "" : "eye-glow"}/>
-      <ellipse cx="80" cy="57" rx="4" ry="3" fill="#87CEEB" style={listening ? { opacity: eyeBright } : undefined} className={listening ? "" : "eye-glow"}/>
-      <circle cx="36" cy="54" r="2.5" fill="white" opacity="0.2"/>
-      <circle cx="76" cy="54" r="2.5" fill="white" opacity="0.2"/>
-      <circle cx="43" cy="59" r="1.2" fill="white" opacity="0.1"/>
-      <circle cx="83" cy="59" r="1.2" fill="white" opacity="0.1"/>
-      <path d="M56 66 L60 74 L64 66Z" fill="#061018" stroke="#87CEEB" strokeWidth="0.7" strokeOpacity="0.3"/>
-      <line x1="60" y1="66" x2="60" y2="73" stroke="#87CEEB" strokeWidth="0.4" opacity="0.2"/>
-      <path d="M34 78 Q38 74 60 74 Q82 74 86 78 L88 88 Q86 98 60 100 Q34 98 32 88Z" fill="url(#mouthGrad)" stroke="#87CEEB" strokeWidth="0.8" strokeOpacity="0.3"/>
-      <line x1="40" y1="80" x2="80" y2="80" stroke="#87CEEB" strokeWidth="0.7" opacity="0.25"/>
-      <line x1="38" y1="85" x2="82" y2="85" stroke="#87CEEB" strokeWidth="0.7" opacity="0.25"/>
-      <line x1="39" y1="90" x2="81" y2="90" stroke="#87CEEB" strokeWidth="0.7" opacity="0.25"/>
-      <line x1="42" y1="95" x2="78" y2="95" stroke="#87CEEB" strokeWidth="0.6" opacity="0.15"/>
-      <circle cx="36" cy="82" r="1.5" fill="#87CEEB" opacity="0.15"/>
-      <circle cx="84" cy="82" r="1.5" fill="#87CEEB" opacity="0.15"/>
-      <ellipse cx="60" cy="102" rx="12" ry="3" fill="#87CEEB" opacity="0.02"/>
+
+      <path d="M28 30 L20 6 L48 24Z" fill="url(#catHead)" stroke="#87CEEB" strokeWidth="1" strokeOpacity="0.4"/>
+      <path d="M92 30 L100 6 L72 24Z" fill="url(#catHead)" stroke="#87CEEB" strokeWidth="1" strokeOpacity="0.4"/>
+      <path d="M30 28 L24 12 L44 24Z" fill="#87CEEB" opacity="0.06"/>
+      <path d="M90 28 L96 12 L76 24Z" fill="#87CEEB" opacity="0.06"/>
+
+      <ellipse cx="60" cy="52" rx="40" ry="38" fill="url(#catHead)" stroke="#87CEEB" strokeWidth="1.2" strokeOpacity="0.4"/>
+
+      <circle cx="42" cy="44" r="14" fill="#0a1822" stroke="#87CEEB" strokeWidth="0.8" strokeOpacity="0.25"/>
+      <circle cx="42" cy="44" r="10" fill="url(#eyeGlow)"
+        style={listening ? { opacity: eyeBright } : undefined} className="eye-glow"/>
+      <circle cx="44" cy="42" r="3.5" fill="#87CEEB"
+        style={listening ? { opacity: eyeBright } : undefined}
+        className={listening ? "" : "eye-glow"}/>
+      <circle cx="42" cy="40" r="1.8" fill="white" opacity="0.25"/>
+
+      <circle cx="78" cy="44" r="14" fill="#0a1822" stroke="#87CEEB" strokeWidth="0.8" strokeOpacity="0.25"/>
+      <circle cx="78" cy="44" r="10" fill="url(#eyeGlow)"
+        style={listening ? { opacity: eyeBright } : undefined} className="eye-glow"/>
+      <circle cx="76" cy="42" r="3.5" fill="#87CEEB"
+        style={listening ? { opacity: eyeBright } : undefined}
+        className={listening ? "" : "eye-glow"}/>
+      <circle cx="74" cy="40" r="1.8" fill="white" opacity="0.25"/>
+
+      <path d="M57 58 L60 55 L63 58Z" fill="#87CEEB" opacity="0.3"/>
+
+      <line x1="18" y1="55" x2="36" y2="58" stroke="#87CEEB" strokeWidth="0.8" opacity="0.2"/>
+      <line x1="16" y1="62" x2="35" y2="62" stroke="#87CEEB" strokeWidth="0.8" opacity="0.15"/>
+      <line x1="18" y1="69" x2="36" y2="66" stroke="#87CEEB" strokeWidth="0.8" opacity="0.2"/>
+      <line x1="102" y1="55" x2="84" y2="58" stroke="#87CEEB" strokeWidth="0.8" opacity="0.2"/>
+      <line x1="104" y1="62" x2="85" y2="62" stroke="#87CEEB" strokeWidth="0.8" opacity="0.15"/>
+      <line x1="102" y1="69" x2="84" y2="66" stroke="#87CEEB" strokeWidth="0.8" opacity="0.2"/>
+
+      <ellipse cx="60" cy={68} rx="12" ry={mouthH} fill="#040c12" stroke="#87CEEB" strokeWidth="1" strokeOpacity="0.3"/>
+
+      <path d={`M54 ${66 + mouthH} Q52 ${66 + mouthH + droolLen * 0.5} 55 ${66 + mouthH + droolLen}`}
+        fill="none" stroke="#87CEEB" strokeWidth="2.5" strokeLinecap="round" opacity="0.55"/>
+      <ellipse cx="55" cy={66 + mouthH + droolLen} rx="2.5" ry="2" fill="#87CEEB" opacity="0.35"/>
     </svg>
   );
 }
+
 
 function App() {
   const [messages, setMessages] = useState([]);
