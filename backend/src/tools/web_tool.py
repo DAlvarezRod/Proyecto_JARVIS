@@ -78,6 +78,14 @@ class WebTool:
                     "required": ["url"],
                 },
             },
+            {
+                "name": "get_daily_verse",
+                "description": "Obtiene el versiculo biblico del dia de YouVersion en español",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                },
+            }
         ]
 
     def execute(self, function_name, arguments):
@@ -117,6 +125,9 @@ class WebTool:
             webbrowser.open(url)
             return "Abriendo " + url + " en el navegador"
 
+        elif function_name == "get_daily_verse":
+            return self._get_daily_verse(arguments)
+
         return "Funcion no encontrada"
 
     def _search(self, arguments, news=False):
@@ -147,3 +158,31 @@ class WebTool:
             return kind + " para '" + query + "':\n\n" + "\n\n".join(lines)
         except Exception as e:
             return "Error buscando: " + str(e)
+
+    def _get_daily_verse(self, params):
+        """Obtiene el versículo del día de YouVersion (Bible.com)"""
+        try:
+            import requests
+            import re
+            import json
+            resp = requests.get(
+                "https://www.bible.com/es/verse-of-the-day",
+                headers={"User-Agent": "Mozilla/5.0"},
+                timeout=10
+            )
+            if resp.status_code == 200:
+                match = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', resp.text)
+                if match:
+                    data = json.loads(match.group(1))
+                    props = data.get("props", {}).get("pageProps", {})
+                    verses = props.get("verses", [])
+                    if verses:
+                        v = verses[0]
+                        text = v.get("content", "").strip()
+                        ref = v.get("reference", {}).get("human", "")
+                        version = v.get("reference", {}).get("version", {}).get("abbreviation", "")
+                        return "Versículo del día (YouVersion): " + text + " — " + ref + " (" + version + ")"
+                return "No se pudo extraer el versículo de YouVersion"
+            return "Error obteniendo versículo: HTTP " + str(resp.status_code)
+        except Exception as e:
+            return "Error obteniendo versículo: " + str(e)

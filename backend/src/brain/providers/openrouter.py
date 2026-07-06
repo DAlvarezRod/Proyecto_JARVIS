@@ -1,3 +1,4 @@
+from asyncio import tools
 import json
 import urllib.request
 import urllib.error
@@ -49,6 +50,14 @@ class OpenRouterProvider(BrainProvider):
             "Si te dicen 'traduce lo que tengo copiado', usa clipboard_read para leer el portapapeles y traduce el contenido."
             "Puedes leer y modificar el portapapeles. Si te piden 'corrige lo que copie', 'resume lo que copie', o 'traduce lo que tengo copiado', "
             "usa clipboard_read para leer el contenido, procesalo, y usa clipboard_write para poner el resultado en el portapapeles."
+            "Cuando el usuario te diga 'buenos dias', 'buen dia', 'good morning', o 'briefing', "
+            "dale un briefing matutino completo: "
+            "1) Usa get_current_datetime para la fecha y hora. "
+            "2) Usa web_search para el clima actual en Bogota. "
+            "3) Usa get_daily_verse para el versiculo biblico del dia. "
+            "4) Usa web_search_news para 2-3 noticias importantes de Colombia y el mundo. "
+            "5) Si el celular esta conectado, usa phone_battery para la bateria. "
+            "Presenta todo organizado y breve, como un briefing de Iron Man. "
             )
         self.conversation_history = []
         self.tool_manager = None
@@ -60,6 +69,10 @@ class OpenRouterProvider(BrainProvider):
         body = {"model": self.model, "messages": messages, "max_tokens": self.max_tokens}
         if tools:
             body["tools"] = tools
+        if tools:
+            for i, t in enumerate(tools):
+                if "function" not in t or "name" not in t.get("function", {}):
+                    print(f"[DEBUG] TOOL MALFORMADO index={i}: {json.dumps(t)[:200]}", flush=True)
         payload = json.dumps(body).encode("utf-8")
         req = urllib.request.Request(
             "https://openrouter.ai/api/v1/chat/completions",
