@@ -263,10 +263,13 @@ class AppTool(Tool):
             dirs = [folder]
         else:
             dirs = [
+                os.path.join(user_profile, "OneDrive", "Desktop"),
+                os.path.join(user_profile, "OneDrive", "Documents"),
                 os.path.join(user_profile, "Desktop"),
                 os.path.join(user_profile, "Documents"),
                 os.path.join(user_profile, "Downloads"),
             ]
+
 
         pattern = "*" + safe + "*"
         if extension:

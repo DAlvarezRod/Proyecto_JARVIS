@@ -66,7 +66,8 @@ class CodeTool(Tool):
             return "Error: filename y code son requeridos"
 
         if not folder:
-            folder = os.path.join(os.environ.get("USERPROFILE", ""), "Desktop")
+            onedrive_desktop = os.path.join(os.environ.get("USERPROFILE", ""), "OneDrive", "Desktop")
+            folder = onedrive_desktop if os.path.isdir(onedrive_desktop) else os.path.join(os.environ.get("USERPROFILE", ""), "Desktop")
 
         os.makedirs(folder, exist_ok=True)
         filepath = os.path.join(folder, filename)

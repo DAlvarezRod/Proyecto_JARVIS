@@ -47,6 +47,8 @@ class OpenRouterProvider(BrainProvider):
             "No puedes cerrar pestanas individuales del navegador. Si te piden cerrar un sitio web (YouTube, Gmail, etc), dile al usuario que no puedes cerrar solo esa pestana, pero ofrece cerrar todo el navegador si quiere."
             "Puedes traducir textos a cualquier idioma. Si te piden traducir algo, hazlo directamente. "
             "Si te dicen 'traduce lo que tengo copiado', usa clipboard_read para leer el portapapeles y traduce el contenido."
+            "Puedes leer y modificar el portapapeles. Si te piden 'corrige lo que copie', 'resume lo que copie', o 'traduce lo que tengo copiado', "
+            "usa clipboard_read para leer el contenido, procesalo, y usa clipboard_write para poner el resultado en el portapapeles."
             )
         self.conversation_history = []
         self.tool_manager = None
