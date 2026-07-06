@@ -58,6 +58,11 @@ class OpenRouterProvider(BrainProvider):
             "4) Usa web_search_news para 2-3 noticias importantes de Colombia y el mundo. "
             "5) Si el celular esta conectado, usa phone_battery para la bateria. "
             "Presenta todo organizado y breve, como un briefing de Iron Man. "
+            "Puedes programar recordatorios y tareas. Cuando el usuario te pida recordar algo en cierto tiempo, "
+            "una tarea diaria, o algo recurrente, usa schedule_task. "
+            "Cuando pida 'cada hora', usa interval_minutes=60. 'Cada 30 minutos' usa interval_minutes=30. "
+            "Para 'todos los dias a las 7am' usa time='07:00' y daily=true. "
+            "Para 'en 2 horas' usa delay_minutes=120. "
             )
         self.conversation_history = []
         self.tool_manager = None
@@ -69,10 +74,6 @@ class OpenRouterProvider(BrainProvider):
         body = {"model": self.model, "messages": messages, "max_tokens": self.max_tokens}
         if tools:
             body["tools"] = tools
-        if tools:
-            for i, t in enumerate(tools):
-                if "function" not in t or "name" not in t.get("function", {}):
-                    print(f"[DEBUG] TOOL MALFORMADO index={i}: {json.dumps(t)[:200]}", flush=True)
         payload = json.dumps(body).encode("utf-8")
         req = urllib.request.Request(
             "https://openrouter.ai/api/v1/chat/completions",
