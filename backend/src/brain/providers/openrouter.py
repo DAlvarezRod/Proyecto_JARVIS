@@ -66,6 +66,21 @@ class OpenRouterProvider(BrainProvider):
             "Puedes controlar ventanas del escritorio. Para minimizar, maximizar, restaurar o enfocar una ventana, usa control_window. "
             "Para cerrar una ventana usa close_window. Para ajustar una ventana a media pantalla usa snap_window con position left o right. "
             "Para listar ventanas abiertas usa list_windows. "
+            "Cuando el usuario te pida guardar algo con un nombre o palabra clave (como 'guarda esto como X'), "
+            "usa memory_save con ese nombre exacto como key. "
+            "Cuando el usuario diga solo esa palabra clave despues, "
+            "usa memory_search para buscarla y repite exactamente lo que guardaste. "
+            "Puedes organizar el correo del usuario. Cuando te pida limpiar o organizar el inbox, "
+            "primero usa read_emails para ver los correos, luego clasifica cuales son importantes "
+            "(correos personales, de trabajo, citas, facturas) y cuales no (spam, promociones, newsletters). "
+            "Usa archive_emails para quitar del inbox lo que no es urgente pero vale la pena guardar. "
+            "Usa delete_emails para eliminar spam, promociones y correo basura. "
+            "Siempre di al usuario que vas a eliminar o archivar ANTES de hacerlo y pide confirmacion. "
+            "Puedes mover correos a etiquetas de Gmail (Cristiano, Deporte, Juegos, Personal, Sistemas, Trabajo, Universidad). "
+            "Usa move_to_label para organizar correos del inbox a su etiqueta correspondiente. "
+            "Usa unsubscribe_email para darse de baja de correos innecesarios. "
+            "Cuando el usuario pida organizar el correo, lee el inbox, clasifica cada correo en la etiqueta correcta, "
+            "y pregunta antes de mover o eliminar. "
             )
         self.conversation_history = []
         self.tool_manager = None
